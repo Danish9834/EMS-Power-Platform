@@ -1,0 +1,89 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_gmail": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedgmail_03ff0"
+        },
+        "api": {
+          "name": "shared_gmail"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Email",
+                  "title": "email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Event Name",
+                  "title": "name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "description": "Event date",
+                  "title": "Text 2",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Send_email_(V2)": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "emailMessage/To": "@triggerBody()?['text']",
+              "emailMessage/Subject": "Your Registration is Confirmed 🎉",
+              "emailMessage/Body": "<p class=\"editor-paragraph\">Hello,<br><br>Thank you for registering for @{triggerBody()['text_1']}<br><br>Event Date: @{triggerBody()['text_2']}<br></p><br><p class=\"editor-paragraph\">Hello<br><br>Congratulations! 🎉<br><br>Your registration for the @{triggerBody()?['text_1']} has been successfully confirmed.<br><br>We are excited to welcome you to one of the most anticipated technology</p><p class=\"editor-paragraph\">and most welcome...<br><br>Regards,<br>Event Management Team</p>"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_gmail",
+              "operationId": "SendEmailV2",
+              "connectionName": "shared_gmail"
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}
